@@ -957,6 +957,24 @@ AC_ARG_WITH(c-include-dirs,
 AC_DEFINE_UNQUOTED(C_INCLUDE_DIRS,"$withval",
                    [Directories clang will search for headers])
 
+AC_ARG_WITH(lfort-srcdir,
+  AS_HELP_STRING([--with-lfort-srcdir],
+    [Directory to the out-of-tree LFort source]),,
+    withval="-")
+case "$withval" in
+  -) lfort_src_root="" ;;
+  /* | [[A-Za-z]]:[[\\/]]*) lfort_src_root="$withval" ;;
+  *) lfort_src_root="$ac_pwd/$withval" ;;
+esac
+AC_SUBST(LFORT_SRC_ROOT,[$lfort_src_root])
+
+AC_ARG_WITH(lfort-resource-dir,
+  AS_HELP_STRING([--with-lfort-resource-dir],
+    [Relative directory from the LFort binary for resource files]),,
+    withval="")
+AC_DEFINE_UNQUOTED(LFORT_RESOURCE_DIR,"$withval",
+                   [Relative directory for resource files])
+
 # Clang normally uses the system c++ headers and libraries. With this option,
 # clang will use the ones provided by a gcc installation instead. This option should
 # be passed the same value that was used with --prefix when configuring gcc.
@@ -1757,6 +1775,18 @@ if test -f ${clang_src_root}/README.txt; then
   doxy="docs/doxygen.cfg"
   AC_CONFIG_HEADERS([tools/clang/${configh}:${clang_src_root}/${configh}.in])
   AC_CONFIG_FILES([tools/clang/${doxy}:${clang_src_root}/${doxy}.in])
+fi
+
+dnl Configure lfort, if present
+if test "${lfort_src_root}" = ""; then
+  lfort_src_root="$srcdir/tools/lfort"
+fi
+if test -f ${lfort_src_root}/README.txt; then
+  dnl Use variables to stay under 80 columns.
+  configh="include/lfort/Config/config.h"
+  doxy="docs/doxygen.cfg"
+  AC_CONFIG_HEADERS([tools/lfort/${configh}:${lfort_src_root}/${configh}.in])
+  AC_CONFIG_FILES([tools/lfort/${doxy}:${lfort_src_root}/${doxy}.in])
 fi
 
 dnl OCaml findlib META file
