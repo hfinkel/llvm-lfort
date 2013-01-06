@@ -750,6 +750,8 @@ ENABLE_WERROR
 DISABLE_ASSERTIONS
 ENABLE_PROFILING
 ENABLE_OPTIMIZED
+ENABLE_LFORT_REWRITER
+ENABLE_LFORT_STATIC_ANALYZER
 ENABLE_CLANG_REWRITER
 ENABLE_CLANG_STATIC_ANALYZER
 ENABLE_CLANG_ARCMT
@@ -845,6 +847,8 @@ enable_cxx11
 enable_clang_arcmt
 enable_clang_static_analyzer
 enable_clang_rewriter
+enable_lfort_static_analyzer
+enable_lfort_rewriter
 enable_optimized
 enable_profiling
 enable_assertions
@@ -1545,6 +1549,10 @@ Optional Features:
                           Enable building of clang Static Analyzer (default is
                           YES)
   --enable-clang-rewriter Enable building of clang rewriter (default is YES)
+  --enable-lfort-static-analyzer
+                          Enable building of lfort Static Analyzer (default is
+                          YES)
+  --enable-lfort-rewriter Enable building of lfort rewriter (default is YES)
   --enable-optimized      Compile with optimizations enabled (default is NO)
   --enable-profiling      Compile with profiling enabled (default is NO)
   --enable-assertions     Compile with assertion checks enabled (default is
@@ -5209,6 +5217,52 @@ $as_echo "$as_me: error: Cannot enable clang static analyzer while disabling rew
 ;;
   *) { { $as_echo "$as_me:$LINENO: error: Invalid setting for --enable-clang-rewriter. Use \"yes\" or \"no\"" >&5
 $as_echo "$as_me: error: Invalid setting for --enable-clang-rewriter. Use \"yes\" or \"no\"" >&2;}
+   { (exit 1); exit 1; }; } ;;
+esac
+
+lfort_static_analyzer="yes"
+# Check whether --enable-lfort-static-analyzer was given.
+if test "${enable_lfort_static_analyzer+set}" = set; then
+  enableval=$enable_lfort_static_analyzer; lfort_static_analyzer="$enableval"
+else
+  enableval="yes"
+fi
+
+case "$enableval" in
+  yes) ENABLE_LFORT_STATIC_ANALYZER=1
+ ;;
+  no)  ENABLE_LFORT_STATIC_ANALYZER=0
+ ;;
+  default) ENABLE_LFORT_STATIC_ANALYZER=1
+;;
+  *) { { $as_echo "$as_me:$LINENO: error: Invalid setting for --enable-lfort-static-analyzer. Use \"yes\" or \"no\"" >&5
+$as_echo "$as_me: error: Invalid setting for --enable-lfort-static-analyzer. Use \"yes\" or \"no\"" >&2;}
+   { (exit 1); exit 1; }; } ;;
+esac
+
+# Check whether --enable-lfort-rewriter was given.
+if test "${enable_lfort_rewriter+set}" = set; then
+  enableval=$enable_lfort_rewriter;
+else
+  enableval="yes"
+fi
+
+case "$enableval" in
+  yes) ENABLE_LFORT_REWRITER=1
+ ;;
+  no)
+    if test ${lfort_static_analyzer} != "no" ; then
+      { { $as_echo "$as_me:$LINENO: error: Cannot enable lfort static analyzer while disabling rewriter." >&5
+$as_echo "$as_me: error: Cannot enable lfort static analyzer while disabling rewriter." >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+    ENABLE_LFORT_REWRITER=0
+
+    ;;
+  default) ENABLE_LFORT_REWRITER=1
+;;
+  *) { { $as_echo "$as_me:$LINENO: error: Invalid setting for --enable-lfort-rewriter. Use \"yes\" or \"no\"" >&5
+$as_echo "$as_me: error: Invalid setting for --enable-lfort-rewriter. Use \"yes\" or \"no\"" >&2;}
    { (exit 1); exit 1; }; } ;;
 esac
 
@@ -10310,7 +10364,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10313 "configure"
+#line 10367 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
