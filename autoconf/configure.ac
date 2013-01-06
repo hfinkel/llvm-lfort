@@ -523,6 +523,37 @@ case "$enableval" in
   *) AC_MSG_ERROR([Invalid setting for --enable-clang-rewriter. Use "yes" or "no"]) ;;
 esac
 
+dnl --enable-lfort-static-analyzer: check whether to enable static-analyzer
+lfort_static_analyzer="yes"
+AC_ARG_ENABLE(lfort-static-analyzer,
+              AS_HELP_STRING([--enable-lfort-static-analyzer],
+                             [Enable building of lfort Static Analyzer (default is YES)]),
+                             lfort_static_analyzer="$enableval",
+                             enableval="yes")
+case "$enableval" in
+  yes) AC_SUBST(ENABLE_LFORT_STATIC_ANALYZER,[1]) ;;
+  no)  AC_SUBST(ENABLE_LFORT_STATIC_ANALYZER,[0]) ;;
+  default) AC_SUBST(ENABLE_LFORT_STATIC_ANALYZER,[1]);;
+  *) AC_MSG_ERROR([Invalid setting for --enable-lfort-static-analyzer. Use "yes" or "no"]) ;;
+esac
+
+dnl --enable-lfort-rewriter: check whether to enable lfort rewriter
+AC_ARG_ENABLE(lfort-rewriter,
+              AS_HELP_STRING([--enable-lfort-rewriter],
+                             [Enable building of lfort rewriter (default is YES)]),,
+                             enableval="yes")
+case "$enableval" in
+  yes) AC_SUBST(ENABLE_LFORT_REWRITER,[1]) ;;
+  no)  
+    if test ${lfort_static_analyzer} != "no" ; then
+      AC_MSG_ERROR([Cannot enable lfort static analyzer while disabling rewriter.])
+    fi
+    AC_SUBST(ENABLE_LFORT_REWRITER,[0]) 
+    ;;
+  default) AC_SUBST(ENABLE_LFORT_REWRITER,[1]);;
+  *) AC_MSG_ERROR([Invalid setting for --enable-lfort-rewriter. Use "yes" or "no"]) ;;
+esac
+
 dnl --enable-optimized : check whether they want to do an optimized build:
 AC_ARG_ENABLE(optimized, AS_HELP_STRING(
  --enable-optimized,[Compile with optimizations enabled (default is NO)]),,enableval=$optimize)
