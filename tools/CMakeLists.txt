@@ -55,6 +55,7 @@ if( LLVM_ENABLE_PIC )
 endif()
 
 add_llvm_external_project(clang)
+add_llvm_external_project(lfort)
 add_llvm_external_project(lld)
 add_llvm_external_project(polly)
 
