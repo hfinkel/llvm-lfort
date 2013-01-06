@@ -22,9 +22,9 @@ endif
 # Build lfort if present.
 
 ifneq ($(LFORT_SRC_ROOT),)
-  OPTIONAL_PARALLEL_DIRS := $(LFORT_SRC_ROOT)
+  OPTIONAL_PARALLEL_DIRS += $(LFORT_SRC_ROOT)
 else
-  OPTIONAL_PARALLEL_DIRS := lfort
+  OPTIONAL_PARALLEL_DIRS += lfort
 endif
 
 # Build LLDB if present. Note LLDB must be built last as it depends on the
