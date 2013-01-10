@@ -47,6 +47,7 @@ PROJ_OBJ_DIR  := $(call realpath, .)
 PROJ_OBJ_ROOT := $(call realpath, $(PROJ_OBJ_DIR)/$(LEVEL))
 
 CLANG_SRC_ROOT  := @CLANG_SRC_ROOT@
+LFORT_SRC_ROOT  := @LFORT_SRC_ROOT@
 
 ifeq ($(PROJECT_NAME),$(LLVMPackageName))
 LLVM_SRC_ROOT   := $(call realpath, @abs_top_srcdir@)
@@ -57,6 +58,10 @@ PROJ_SRC_DIR    := $(LLVM_SRC_ROOT)$(patsubst $(PROJ_OBJ_ROOT)%,%,$(PROJ_OBJ_DIR
 ifneq ($(CLANG_SRC_ROOT),)
   CLANG_SRC_ROOT:= $(call realpath, $(CLANG_SRC_ROOT))
   PROJ_SRC_DIR  := $(patsubst $(LLVM_SRC_ROOT)/tools/clang%,$(CLANG_SRC_ROOT)%,$(PROJ_SRC_DIR))
+endif
+ifneq ($(LFORT_SRC_ROOT),)
+  LFORT_SRC_ROOT:= $(call realpath, $(LFORT_SRC_ROOT))
+  PROJ_SRC_DIR  := $(patsubst $(LLVM_SRC_ROOT)/tools/clang%,$(LFORT_SRC_ROOT)%,$(PROJ_SRC_DIR))
 endif
 
 prefix          := @prefix@
@@ -230,6 +235,12 @@ ENABLE_CLANG_REWRITER = @ENABLE_CLANG_REWRITER@
 
 # When ENABLE_CLANG_STATIC_ANALYZER is enabled, clang will have StaticAnalyzer.
 ENABLE_CLANG_STATIC_ANALYZER = @ENABLE_CLANG_STATIC_ANALYZER@
+
+# When ENABLE_LFORT_REWRITER is enabled, clang will have Rewriter.
+ENABLE_LFORT_REWRITER = @ENABLE_LFORT_REWRITER@
+
+# When ENABLE_LFORT_STATIC_ANALYZER is enabled, clang will have StaticAnalyzer.
+ENABLE_LFORT_STATIC_ANALYZER = @ENABLE_LFORT_STATIC_ANALYZER@
 
 # When ENABLE_WERROR is enabled, we'll pass -Werror on the command line
 ENABLE_WERROR = @ENABLE_WERROR@
